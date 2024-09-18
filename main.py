@@ -2,14 +2,13 @@ import discord
 import random
 import re
 import os
-from dotenv import load_dotenv
 from discord.ext import commands
+import webserver
 
-load_dotenv('cheese.env')
-TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+TOKEN = os.environ('dctoken')
 
 if TOKEN is None:
-    raise ValueError("No DISCORD_BOT_TOKEN found in environment variables")
+    raise ValueError("No dctoken found in environment variables")
 
 intents = discord.Intents.default()
 client = commands.Bot(command_prefix="!", intents=intents)
@@ -55,6 +54,8 @@ async def on_ready():
         print("Slash commands synchronized successfully.")
     except Exception as e:
         print(f"Failed to synchronize commands: {e}")
+
+webserver.keep_alive()
 
 async def start_bot():
     while True:
