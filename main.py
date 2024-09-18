@@ -12,13 +12,12 @@ if TOKEN is None:
     raise ValueError("No DISCORD_BOT_TOKEN found in environment variables")
 
 intents = discord.Intents.default()
-intents.message_content = True
-
 client = commands.Bot(command_prefix="!", intents=intents)
+tree = client.tree
 
 def roll_dice(dice_str):
     if not dice_str:
-        dice_str = '1d20'
+        dice_str = '2d10'
 
     match = re.match(r'(\d*)d(\d+)', dice_str)
     if not match:
@@ -31,6 +30,22 @@ def roll_dice(dice_str):
     total = sum(rolls)
     return f"Rolls: {rolls} | Total: {total}"
 
+@tree.command(name="ping", description="Check the dndroll's latency")
+async def ping(interaction: discord.Interaction):
+    latency = round(client.latency * 1000)
+    await interaction.response.send_message(f'Pong! {latency}ms')
+
+@tree.command(name="roll", description="Rolls a dice")
+async def roll(interaction: discord.Interaction):
+    result = roll_dice("2d10")
+    await interaction.response.send_message(result)
+
+@tree.command(name="roll_plus", description="Rolls how many dice and sides you want")
+async def roll_plus(interaction: discord.Interaction, num_dice: int, num_sides: int):
+    dice = f"{num_dice}d{num_sides}"
+    result = roll_dice(dice)
+    await interaction.response.send_message(result)
+
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
@@ -41,24 +56,21 @@ async def on_ready():
     except Exception as e:
         print(f"Failed to synchronize commands: {e}")
 
-@client.tree.command(name="ping", description="Check the dndroll's latency")
-async def ping(interaction: discord.Interaction):
-    latency = round(client.latency * 1000)
-    await interaction.response.send_message(f'Pong! {latency}ms')
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.startswith('!roll'):
-        dice_str = message.content[len('!roll '):].strip()
-        result = roll_dice(dice_str)
-        await message.channel.send(result)
+async def start_bot():
+    while True:
+        try:
+            await client.start(TOKEN)
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            print("Reconnecting in 5 seconds...")
+            await asyncio.sleep(5)
+        else:
+            print("Reconnected successfully.")
+            break
 
 async def main():
-    async with client:
-        await client.start(TOKEN)
+    await start_bot()
 
 import asyncio
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
