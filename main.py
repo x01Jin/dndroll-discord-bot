@@ -5,7 +5,7 @@ import os
 from discord.ext import commands
 import webserver
 
-TOKEN = os.environ('dctoken')
+TOKEN = os.environ['dctoken']
 
 if TOKEN is None:
     raise ValueError("No dctoken found in environment variables")
