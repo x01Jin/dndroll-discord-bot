@@ -14,7 +14,7 @@ intents = discord.Intents.default()
 client = commands.Bot(command_prefix="!", intents=intents)
 tree = client.tree
 
-def roll_dice(dice_str):
+def roll_dice(dice_str, interaction):
     if not dice_str:
         dice_str = '1d20'
 
@@ -27,7 +27,7 @@ def roll_dice(dice_str):
 
     rolls = [random.randint(1, num_sides) for _ in range(num_dice)]
     total = sum(rolls)
-    return f"Rolls: {rolls} | Total: {total}"
+    return f"{interaction.user} rolled ' {num_dice} ' dice with ' {num_sides} ' sides each and got {rolls} = ' {total} '!"
 
 @tree.command(name="ping", description="Check the dndroll's latency")
 async def ping(interaction: discord.Interaction):
@@ -36,13 +36,13 @@ async def ping(interaction: discord.Interaction):
 
 @tree.command(name="roll", description="Rolls a dice")
 async def roll(interaction: discord.Interaction):
-    result = roll_dice("2d10")
+    result = roll_dice("1d20", interaction)
     await interaction.response.send_message(result)
 
 @tree.command(name="roll_plus", description="Rolls how many dice and sides you want")
 async def roll_plus(interaction: discord.Interaction, num_dice: int, num_sides: int):
     dice = f"{num_dice}d{num_sides}"
-    result = roll_dice(dice)
+    result = roll_dice(dice, interaction)
     await interaction.response.send_message(result)
 
 @client.event
@@ -63,8 +63,8 @@ async def start_bot():
             await client.start(TOKEN)
         except Exception as e:
             print(f"Error occurred: {e}")
-            print("Reconnecting in 5 seconds...")
-            await asyncio.sleep(5)
+            print("Reconnecting in 3 seconds...")
+            await asyncio.sleep(3)
         else:
             print("Reconnected successfully.")
             break
