@@ -27,7 +27,16 @@ def roll_dice(dice_str, interaction):
 
     rolls = [random.randint(1, num_sides) for _ in range(num_dice)]
     total = sum(rolls)
-    return f"{interaction.user} rolled ' {num_dice} ' dice with ' {num_sides} ' sides each and got {rolls} = ' {total} '!"
+    if num_dice == 1:
+        if num_dice == 1 and num_sides == 20 and rolls[0] == 20:
+            if interaction.command.name == "roll":
+                return f"{interaction.user} rolled a nat 20 holy shit!"
+        elif num_sides == 20:
+            return f"{interaction.user} rolled a D20 and got {rolls[0]}!"
+        else:
+            return f"{interaction.user} rolled a die with {num_sides} sides and got {rolls[0]}!"
+
+    return f"{interaction.user} rolled {num_dice} dice with {num_sides} sides each and got {rolls} = {total}"
 
 @tree.command(name="ping", description="Check the dndroll's latency")
 async def ping(interaction: discord.Interaction):
