@@ -16,7 +16,7 @@ tree = client.tree
 
 def roll_dice(dice_str):
     if not dice_str:
-        dice_str = '2d10'
+        dice_str = '1d20'
 
     match = re.match(r'(\d*)d(\d+)', dice_str)
     if not match:
