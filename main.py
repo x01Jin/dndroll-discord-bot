@@ -38,16 +38,18 @@ def roll_dice(dice_str, interaction):
                 return f"{interaction.user.mention} rolled a nat 20! Insane!"
             elif rolls[0] == 1:
                 return f"{interaction.user.mention} rolled a 1 on a D20... Bro's luck ran out ☠️"
+            elif rolls[0] >= 19:
+                return f"{interaction.user.mention} rolled a D20 and got {rolls[0]}! Bro is being edged by fate ☠️!"
             return f"{interaction.user.mention} rolled a D20 and got {rolls[0]}!"
-        return f"{interaction.user.mention} rolled a die with ' {num_sides} ' sides and got {rolls[0]}!"
+        return f"{interaction.user.mention} rolled a die with {num_sides} sides and got {rolls[0]}!"
     
     if all(roll == num_sides for roll in rolls):
-        return f"{interaction.user.mention} rolled ' {num_dice} ' dice with ' {num_sides} ' sides each and got {rolls} = {total} maxed all of them! BRO WHAT THE HECK!😭😭😭"
+        return f"{interaction.user.mention} rolled {num_dice} dice with {num_sides} sides each and got {rolls} = {total} maxed all of them! BRO WHAT THE HECK!😭😭😭"
     
     if all(roll == 1 for roll in rolls):
-        return f"{interaction.user.mention} rolled ' {num_dice} ' dice with ' {num_sides} ' sides each and got {rolls} all 1s... Bro's luck ran out astronomically ☠️☠️☠️"
+        return f"{interaction.user.mention} rolled {num_dice} dice with {num_sides} sides each and got {rolls} all 1s... Bro's luck ran out astronomically ☠️☠️☠️"
 
-    return f"{interaction.user.mention} rolled ' {num_dice} '  dice with ' {num_sides} '  sides each and got {rolls} = {total}"
+    return f"{interaction.user.mention} rolled {num_dice} dice with {num_sides} sides each and got {rolls} = {total}"
 
 @tree.command(name="ping", description="Check the bot's latency")
 async def ping(interaction: discord.Interaction):
