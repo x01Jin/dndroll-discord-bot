@@ -1,4 +1,14 @@
-.venv
+.venv/
 .env
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+.env.example
+# legacy
 test.py
-
+start_bot.bat
+webserver.py
