@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: dndroll-discord-bot
+    runtime: python
+    # Render auto-installs via pip; keep in sync with requirements.txt
+    buildCommand: pip install -r requirements.txt
+    # Bot is the main process; Flask sidecar thread binds $PORT
+    startCommand: python main.py
+    healthCheckPath: /health
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: LOG_LEVEL
+        value: INFO
+      # Optional: set GUILD_ID for instant slash-command sync in dev
+      # - key: GUILD_ID
+      #   sync: false
+      # PORT is injected by Render — do not set manually
+      - key: PYTHON_VERSION
+        value: 3.12.0

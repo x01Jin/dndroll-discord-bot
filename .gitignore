@@ -11,4 +11,3 @@ build/
 # legacy
 test.py
 start_bot.bat
-webserver.py

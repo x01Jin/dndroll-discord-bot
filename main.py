@@ -6,6 +6,7 @@ import asyncio
 import logging
 import sys
 
+import webserver
 from bot import DndRollBot
 from config import load_settings
 
@@ -19,6 +20,7 @@ def setup_logging(level: str = "INFO") -> None:
         format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
         stream=sys.stdout,
+        force=True,
     )
     # Quiet noisy libs unless DEBUG.
     if numeric > logging.DEBUG:
@@ -27,7 +29,14 @@ def setup_logging(level: str = "INFO") -> None:
 
 
 async def main() -> None:
+    # Always-on Render trick: bind $PORT (or 8080 locally) in a daemon thread.
+    # Start *before* load_settings so /health is up even if token is misconfigured
+    # (mirrors old webserver.keep_alive() at module import time).
+    setup_logging()  # default INFO so keep_alive logs are visible
+    webserver.keep_alive()
+
     settings = load_settings()
+    # Re-apply user-requested level (e.g. DEBUG via LOG_LEVEL env).
     setup_logging(settings.log_level)
 
     bot = DndRollBot(settings)
